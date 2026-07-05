@@ -1,0 +1,23 @@
+diff --git a/proxy.py b/proxy.py
+index 60b878d..450b3d7 100755
+--- a/proxy.py
++++ b/proxy.py
+@@ -344,11 +344,16 @@ config = Config()
+ 
+ 
+ def normalize_openai_base_url(base_url: str) -> str:
+-    """Return the OpenAI-compatible /v1 base URL without duplicating /v1."""
++    """Return the OpenAI-compatible base URL without duplicating a version segment.
++
++    Preserves any existing version segment (e.g. /v1, /v2, /v3) so providers
++    such as Volcengine Ark (which uses /api/v3 or /api/plan/v3) are not
++    incorrectly rewritten to /v1.
++    """
+     cleaned = (base_url or "").rstrip("/")
+     if not cleaned:
+         return ""
+-    return cleaned if cleaned.endswith("/v1") else cleaned + "/v1"
++    return cleaned if ends_with_version_segment(cleaned) else cleaned + "/v1"
+ 
+ 
+ def normalize_upstream_mode(mode: str) -> str:

@@ -2,14 +2,31 @@
 
 > 官方安装命令被墙、又没有 Claude 付费账号?这篇教你绕过地理封锁安装 Claude Science,并用任意一家大模型 API(火山引擎、DeepSeek、Kimi、智谱、OpenAI、甚至本地模型)替代官方接口——全程无需登录 Claude 账号。
 
-## 📌 本仓库包含
+## ⚡ 本仓库是一个可复用的 Hermes Skill
 
-- **README.md** — 完整图文教程(即下文)
-- **scripts/cs-start.sh** — 一键启动脚本(自动检测补丁 / 刷新令牌 / 启动服务)
-- **patches/volcengine-v3-url-fix.patch** — 修复代理对火山引擎 `/v3` 端点的 URL 拼接问题
-- 上游代理项目:[Jyx0208/claude-science-api-bridge](https://github.com/Jyx0208/claude-science-api-bridge)
+这份教程不只是文章——它本身就是一个结构化的 **Hermes Agent skill**(`SKILL.md`)。如果你用 Hermes 或任何兼容 SKILL.md 格式的 AI Agent,clone 到 skills 目录即可被自动加载:以后只需说一句"帮我装 Claude Science",AI 就会照这套流程执行,不用每次重新教。
 
-> 适用于 Claude Science 0.1.15 + claude-science-api-bridge v0.2.9。不绑定任何一家模型供应商。
+```bash
+git clone https://github.com/8lampard8/claude-science-cn.git \
+  ~/.hermes/skills/software-development/claude-science-byok
+```
+
+不用 Hermes 也没关系,直接照着下文或 `SKILL.md` 一步步跑即可,脚本和参考配置都能单独使用。
+
+## 📌 仓库内容
+
+| 文件 | 说明 |
+|---|---|
+| `README.md` | 完整图文教程(即下文) |
+| `SKILL.md` | 可复用技能文件(AI Agent 可加载,含触发条件/步骤/排坑/验证清单) |
+| `scripts/install-claude-science.sh` | 下载 + SHA256 校验 + 安装二进制 |
+| `scripts/cs-start.sh` | 一键启动(自动检测补丁 / 刷新令牌 / 启动服务) |
+| `references/providers.md` | 8 家 API 供应商的现成配置(火山引擎/DeepSeek/智谱/硅基/OpenAI/Ollama/vLLM/中转) |
+| `patches/volcengine-v3-url-fix.patch` | 火山引擎 `/v3` 端点 URL 修复 |
+
+上游代理项目:[Jyx0208/claude-science-api-bridge](https://github.com/Jyx0208/claude-science-api-bridge)
+
+> 适用于 Claude Science 0.1.15 + claude-science-api-bridge v0.2.9。不绑定任何一家模型供应商,有 Anthropic 原生端点的优先用 `anthropic` 模式,否则用 `openai` 模式。
 
 ## 一、先说清楚:Claude Science 是什么,为什么国内用不了
 
@@ -258,6 +275,8 @@ curl -sS http://127.0.0.1:9876/v1/messages \
 - **官方 API** 用不起/用不了?那就接你自己的 API,代理帮你做格式转换。
 
 Claude Science 真正的价值在于那个"过程可追溯"的科研工作台:代码、数据、图表、执行记录都焊在一起,复盘时不用在聊天记录和文件夹之间来回翻。而这套免登录 + 自带 API 的玩法,让国内研究者也能用上它——而且不绑定任何一家模型供应商,哪家便宜、哪家好用就换哪家。
+
+**本仓库同时是一个可复用的 Hermes skill**(见文首说明)。clone 到 skills 目录后,AI 助手能自动按这套流程帮你部署,省去手动照搬命令;也欢迎 Star / PR 补充更多供应商配置。
 
 ---
 

@@ -37,7 +37,7 @@ echo "==> [3/5] Refreshing fake OAuth token..."
 echo "==> [4/5] Detecting sandbox capability..."
 # Claude Science needs bwrap ≥0.8 (for --disable-userns) + socat.
 # Install both without sudo: conda install -c conda-forge bubblewrap socat
-if bwrap --unshare-user --disable-userns --dev-bind / / --true >/dev/null 2>&1 && command -v socat >/dev/null 2>&1; then
+if bwrap --unshare-user --disable-userns --dev-bind / / -- true >/dev/null 2>&1 && command -v socat >/dev/null 2>&1; then
   SANDBOX_FLAG=""
   echo "    Sandbox: ENABLED (bwrap $(bwrap --version 2>&1), socat $(command -v socat))"
 else

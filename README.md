@@ -254,7 +254,15 @@ curl -sS http://127.0.0.1:9876/v1/messages \
 
 ## 十、注意事项与排坑
 
-1. **bubblewrap 版本**:Claude Science 的代码沙箱需要 bubblewrap 0.8.0+。Ubuntu 20.04 / 22.04 自带版本太旧,会报 `bwrap too old`。两个办法:升级到 Ubuntu 24.04+(推荐);或暂时加 `--dangerously-no-sandbox` 跳过沙箱(代码会有完整的家目录读写权限,自用可接受,生产环境慎用)。
+1. **bubblewrap 版本 + socat**:Claude Science 的代码沙箱需要 bubblewrap 0.8.0+ 和 socat。Ubuntu 20.04 / 22.04 自带 bwrap 0.4.0 太旧(会报 `bwrap too old`),且可能没装 socat。**不用升级 Ubuntu、不用 sudo** 的最佳办法是用 conda 装(bubblewrap 自带兼容的 glibc/libcap,能跑在老系统上,且在 PATH 里优先于系统旧版):
+
+   ```bash
+   conda install -c conda-forge bubblewrap socat -y
+   bwrap --version                              # 应 ≥ 0.8.0
+   bwrap --unshare-user --disable-userns --dev-bind / / -- true   # exit 0 即沙箱就绪
+   ```
+
+   装完后,给 systemd 服务加一行 `Environment=PATH=%h/miniconda3/bin:...` 确保守护进程能找到 conda 的 bwrap/socat,然后去掉启动参数里的 `--dangerously-no-sandbox` 即可启用真沙箱。只有没法用 conda 时才退回 `--dangerously-no-sandbox`(代码有完整家目录读写权限,自用可接受,生产环境慎用)。
 
 2. **补丁随更新失效**:Claude Science 更新会覆盖二进制,免登录补丁要重打。可以写个启动脚本每次检测补丁是否还在,缺失就自动重打。
 
